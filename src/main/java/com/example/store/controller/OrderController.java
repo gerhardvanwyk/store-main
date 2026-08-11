@@ -25,6 +25,11 @@ public class OrderController {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
     }
 
+    @GetMapping("/{id}")
+    public OrderDTO getOrderById(@PathVariable Long id) {
+        return orderMapper.orderToOrderDTO(orderRepository.findById(id).orElseThrow());
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDTO createOrder(@RequestBody Order order) {

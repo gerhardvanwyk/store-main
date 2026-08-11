@@ -13,3 +13,8 @@ spring:
         default_batch_fetch_size: 10
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+app:
+  cache:
+    chronicle-map:
+      file: customers_cache.dat
+      entries: 1000
