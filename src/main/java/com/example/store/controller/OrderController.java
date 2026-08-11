@@ -29,7 +29,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "orders", key = "#id.toString()")
+    @Cacheable(value = "orders", key = "#id")
     public OrderDTO getOrderById(@PathVariable Long id) {
         return orderMapper.orderToOrderDTO(orderRepository.findById(id).orElseThrow());
     }

@@ -44,11 +44,10 @@ public class CacheConfig {
                 .of(Long.class, Serializable.class)
                 .name("orders-map")
                 .entries(entries)
-                .averageKey(Long.MAX_VALUE)
                 .averageValue(new ArrayList<>())
                 .createPersistedTo(ordersFile);
 
-        ChronicleSpringCache springOrdersCache = new ChronicleSpringCache("customers", ordersMap);
+        ChronicleSpringCache springOrdersCache = new ChronicleSpringCache("orders", ordersMap);
         caches.add(springOrdersCache);
 
         // Chronicle Map for "customers" cache
@@ -57,7 +56,6 @@ public class CacheConfig {
                 .of(Long.class, Serializable.class)
                 .name("customers-map")
                 .entries(entries)
-                .averageKey(Long.MAX_VALUE)
                 .averageValue(new ArrayList<>())
                 .createPersistedTo(customersFile);
 
@@ -71,11 +69,10 @@ public class CacheConfig {
                 .of(Long.class, Serializable.class)
                 .name("products-map")
                 .entries(entries)
-                .averageKey(Long.MAX_VALUE)
                 .averageValue(new ArrayList<>())
                 .createPersistedTo(productsFile);
 
-        ChronicleSpringCache springProductsCache = new ChronicleSpringCache("customers", ordersMap);
+        ChronicleSpringCache springProductsCache = new ChronicleSpringCache("products", productsMap);
         caches.add(springProductsCache);
 
         cacheManager.setCaches(caches);

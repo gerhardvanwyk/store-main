@@ -1,5 +1,6 @@
 package com.example.store.controller;
 
+import com.example.store.config.CacheConfig;
 import com.example.store.dto.OrderDTO;
 import com.example.store.dto.ProductDTO;
 import com.example.store.entity.Order;
@@ -12,30 +13,28 @@ import com.example.store.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.support.SimpleCacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = ProductOrderIntegrationTest.TestConfig.class)
+@SpringBootTest(classes = ProductOrderIntegrationTest.TestConfig.class, properties = {
+        "app.cache.chronicle-map.customers=build/test-customers.dat",
+        "app.cache.chronicle-map.products=build/test-products.dat",
+        "app.cache.chronicle-map.orders=build/test-orders.dat"
+})
 public class ProductOrderIntegrationTest {
 
     @Configuration
     @EnableCaching
-    @Import({ProductController.class, OrderController.class})
+    @Import({ProductController.class, OrderController.class, CacheConfig.class})
     @ComponentScan(basePackageClasses = {ProductMapper.class, OrderMapper.class})
     static class TestConfig {
         @Bean

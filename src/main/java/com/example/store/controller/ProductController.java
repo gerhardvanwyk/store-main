@@ -28,7 +28,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "products", key = "#id.toString()")
+    @Cacheable(value = "products", key = "#id")
     public ProductDTO getProductById(@PathVariable Long id) {
         return productRepository.findById(id)
                 .map(productMapper::productToProductDTO)

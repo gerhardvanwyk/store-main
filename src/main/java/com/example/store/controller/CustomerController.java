@@ -29,7 +29,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{name}")
-    @Cacheable(value = "customers", key = "#name")
+    @Cacheable(value = "customers", key = "#id")
     public CustomerDTO getCustomerByName(@PathVariable String name) {
         return customerMapper.customerToCustomerDTO(customerRepository.findByName(name).orElseThrow());
     }
