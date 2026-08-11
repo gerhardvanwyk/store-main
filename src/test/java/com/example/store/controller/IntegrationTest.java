@@ -25,12 +25,12 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = ProductOrderIntegrationTest.TestConfig.class, properties = {
+@SpringBootTest(classes = IntegrationTest.TestConfig.class, properties = {
         "app.cache.chronicle-map.customers=build/test-customers.dat",
         "app.cache.chronicle-map.products=build/test-products.dat",
         "app.cache.chronicle-map.orders=build/test-orders.dat"
 })
-public class ProductOrderIntegrationTest {
+public class IntegrationTest {
 
     @Configuration
     @EnableCaching
@@ -65,6 +65,9 @@ public class ProductOrderIntegrationTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Test
     void testGetProductReturnsOrderIds() {
