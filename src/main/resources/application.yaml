@@ -16,5 +16,7 @@ spring:
 app:
   cache:
     chronicle-map:
-      file: customers_cache.dat
+      customers: customers_cache.dat
+      products: products_cache.dat
+      orders: orders_cache.dat
       entries: 1000

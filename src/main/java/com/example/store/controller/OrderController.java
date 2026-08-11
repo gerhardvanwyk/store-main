@@ -7,6 +7,8 @@ import com.example.store.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +23,20 @@ public class OrderController {
     private final OrderMapper orderMapper;
 
     @GetMapping
+    @Cacheable(value = "orders", key = "'all'")
     public List<OrderDTO> getAllOrders() {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
     }
 
     @GetMapping("/{id}")
+    @Cacheable(value = "orders", key = "#id.toString()")
     public OrderDTO getOrderById(@PathVariable Long id) {
         return orderMapper.orderToOrderDTO(orderRepository.findById(id).orElseThrow());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CacheEvict(value = "orders", allEntries = true)
     public OrderDTO createOrder(@RequestBody Order order) {
         return orderMapper.orderToOrderDTO(orderRepository.save(order));
     }

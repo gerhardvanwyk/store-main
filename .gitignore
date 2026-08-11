@@ -39,3 +39,6 @@ out/
 node_modules
 
 test_customers_cache.dat
+products_cache.dat
+orders_cache.dat
+customrs_cache.date

@@ -1,13 +1,15 @@
 package com.example.store.controller;
 
 import com.example.store.dto.ProductDTO;
+import com.example.store.entity.Product;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,5 +25,20 @@ public class ProductController {
     @Cacheable(value = "products", key = "'all'")
     public List<ProductDTO> getAllProducts() {
         return productMapper.productsToProductDTOs(productRepository.findAll());
+    }
+
+    @GetMapping("/{id}")
+    @Cacheable(value = "products", key = "#id.toString()")
+    public ProductDTO getProductById(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(productMapper::productToProductDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @CacheEvict(value = "products", allEntries = true)
+    public ProductDTO createProduct(@RequestBody Product product) {
+        return productMapper.productToProductDTO(productRepository.save(product));
     }
 }

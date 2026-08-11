@@ -7,7 +7,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.cache.annotation.EnableCaching;
 
@@ -23,8 +21,14 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 public class CacheConfig {
 
-    @Value("${app.cache.chronicle-map.file:customers_cache.dat}")
-    private String cacheFile;
+    @Value("${app.cache.chronicle-map.customers:customers_cache.dat}")
+    private String customerCache;
+
+    @Value("${app.cache.chronicle-map.products:products_cache.dat}")
+    private String productsCache;
+
+    @Value("${app.cache.chronicle-map.orders:oders_cache.dat}")
+    private String ordersCache;
 
     @Value("${app.cache.chronicle-map.entries:1000}")
     private long entries;
@@ -35,23 +39,44 @@ public class CacheConfig {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         List<Cache> caches = new ArrayList<>();
 
+        File ordersFile = new File(ordersCache);
+        ChronicleMap<Long, Serializable> ordersMap = ChronicleMapBuilder
+                .of(Long.class, Serializable.class)
+                .name("orders-map")
+                .entries(entries)
+                .averageKey(Long.MAX_VALUE)
+                .averageValue(new ArrayList<>())
+                .createPersistedTo(ordersFile);
+
+        ChronicleSpringCache springOrdersCache = new ChronicleSpringCache("customers", ordersMap);
+        caches.add(springOrdersCache);
+
         // Chronicle Map for "customers" cache
-        // We use a persisted map for production as requested
-        File file = new File(cacheFile);
-        
-        ChronicleMap<String, Serializable> customersMap = ChronicleMapBuilder
-                .of(String.class, Serializable.class)
+        File customersFile = new File(customerCache);
+        ChronicleMap<Long, Serializable> customersMap = ChronicleMapBuilder
+                .of(Long.class, Serializable.class)
                 .name("customers-map")
                 .entries(entries)
-                .averageKey("customer-key")
+                .averageKey(Long.MAX_VALUE)
                 .averageValue(new ArrayList<>())
-                .createPersistedTo(file);
+                .createPersistedTo(customersFile);
 
-        // We wrap ChronicleMap to ensure it behaves correctly with Spring Cache
-        // ChronicleMap implements ConcurrentMap, so ConcurrentMapCache can use it.
-        // ChronicleMap requires String keys here, but Spring uses SimpleKey for no-arg methods.
-        // We use a custom wrapper or key generator if needed, but for now we try to force String keys.
-        caches.add(new ConcurrentMapCache("customers", (ConcurrentMap) customersMap, false));
+        // Wrap it inside your custom Spring Cache adapter
+        ChronicleSpringCache springCustomerCache = new ChronicleSpringCache("customers", customersMap);
+        caches.add(springCustomerCache);
+
+        // Chronicle Map for "products" cache
+        File productsFile = new File(productsCache);
+        ChronicleMap<Long, Serializable> productsMap = ChronicleMapBuilder
+                .of(Long.class, Serializable.class)
+                .name("products-map")
+                .entries(entries)
+                .averageKey(Long.MAX_VALUE)
+                .averageValue(new ArrayList<>())
+                .createPersistedTo(productsFile);
+
+        ChronicleSpringCache springProductsCache = new ChronicleSpringCache("customers", ordersMap);
+        caches.add(springProductsCache);
 
         cacheManager.setCaches(caches);
         return cacheManager;
