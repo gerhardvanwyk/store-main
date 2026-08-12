@@ -5,6 +5,7 @@ import com.example.store.dto.OrderDTO;
 import com.example.store.dto.ProductDTO;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
+import com.example.store.entity.Customer;
 import com.example.store.mapper.OrderMapper;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.CustomerRepository;
@@ -26,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = IntegrationTest.TestConfig.class, properties = {
-        "app.cache.chronicle-map.customers=build/test-customers.dat",
-        "app.cache.chronicle-map.products=build/test-products.dat",
-        "app.cache.chronicle-map.orders=build/test-orders.dat"
+        "app.cache.chronicle-map.customers=build/test-customers-2.dat",
+        "app.cache.chronicle-map.products=build/test-products-2.dat",
+        "app.cache.chronicle-map.orders=build/test-orders-2.dat"
 })
 public class IntegrationTest {
 
@@ -111,5 +112,38 @@ public class IntegrationTest {
         assertEquals(1, result.getProducts().size());
         assertEquals(1L, result.getProducts().get(0).getId());
         assertEquals("Test Product", result.getProducts().get(0).getDescription());
+    }
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private org.springframework.cache.CacheManager cacheManager;
+
+    @Test
+    void testGetOrderReturnsCustomers() {
+        if (cacheManager.getCache("orders") != null) {
+            cacheManager.getCache("orders").clear();
+        }
+
+        Order order = new Order();
+        order.setId(10L);
+        order.setDescription("Test Order");
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("John Doe");
+
+        order.setCustomers(new java.util.HashSet<>(java.util.Set.of(customer)));
+
+        when(orderRepository.findById(10L)).thenReturn(Optional.of(order));
+
+        OrderDTO result = orderController.getOrderById(10L);
+        
+        assertEquals(10L, result.getId());
+        assertNotNull(result.getCustomers());
+        assertEquals(1, result.getCustomers().size());
+        assertEquals(1L, result.getCustomers().get(0).getId());
+        assertEquals("John Doe", result.getCustomers().get(0).getName());
     }
 }

@@ -12,9 +12,12 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface OrderMapper {
 
+    @org.mapstruct.Mapping(source = "customers", target = "customers")
     OrderDTO orderToOrderDTO(Order order);
 
-    List<OrderDTO> ordersToOrderDTOs(List<Order> orders);
+    List<OrderDTO> ordersToOrderDTOs(java.util.Collection<Order> orders);
 
-    OrderCustomerDTO orderToOrderCustomerDTO(Customer customer);
+    OrderCustomerDTO customerToOrderCustomerDTO(Customer customer);
+
+    List<OrderCustomerDTO> customersToOrderCustomerDTOs(java.util.Collection<Customer> customers);
 }

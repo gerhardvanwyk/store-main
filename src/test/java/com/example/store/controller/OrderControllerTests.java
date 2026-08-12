@@ -53,7 +53,7 @@ class OrderControllerTests {
         order = new Order();
         order.setDescription("Test Order");
         order.setId(1L);
-        order.setCustomer(customer);
+        order.setCustomers(new java.util.HashSet<>(java.util.List.of(customer)));
     }
 
     @Test
@@ -66,7 +66,7 @@ class OrderControllerTests {
                         .content(objectMapper.writeValueAsString(order)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.description").value("Test Order"))
-                .andExpect(jsonPath("$.customer.name").value("John Doe"));
+                .andExpect(jsonPath("$.customers[0].name").value("John Doe"));
     }
 
     @Test
@@ -76,7 +76,7 @@ class OrderControllerTests {
         mockMvc.perform(get("/order"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..description").value("Test Order"))
-                .andExpect(jsonPath("$..customer.name").value("John Doe"));
+                .andExpect(jsonPath("$..customers[0].name").value("John Doe"));
     }
 
     @Test
@@ -86,7 +86,7 @@ class OrderControllerTests {
         mockMvc.perform(get("/order/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("Test Order"))
-                .andExpect(jsonPath("$.customer.name").value("John Doe"));
+                .andExpect(jsonPath("$.customers[0].name").value("John Doe"));
     }
 
     @Test

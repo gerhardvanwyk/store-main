@@ -41,6 +41,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @CacheEvict(value = "orders", allEntries = true)
     public OrderDTO createOrder(@RequestBody Order order) {
-        return orderMapper.orderToOrderDTO(orderRepository.save(order));
+        Order saved = orderRepository.save(order);
+        return orderMapper.orderToOrderDTO(saved);
     }
 }

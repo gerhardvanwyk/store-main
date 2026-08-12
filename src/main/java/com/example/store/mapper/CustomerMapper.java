@@ -11,5 +11,9 @@ import java.util.List;
 public interface CustomerMapper {
     CustomerDTO customerToCustomerDTO(Customer customer);
 
-    List<CustomerDTO> customersToCustomerDTOs(List<Customer> customer);
+    List<CustomerDTO> customersToCustomerDTOs(java.util.Collection<Customer> customer);
+
+    com.example.store.dto.CustomerOrderDTO orderToCustomerOrderDTO(com.example.store.entity.Order order);
+
+    List<com.example.store.dto.CustomerOrderDTO> ordersToCustomerOrderDTOs(java.util.Collection<com.example.store.entity.Order> orders);
 }

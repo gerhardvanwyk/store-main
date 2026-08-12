@@ -12,8 +12,8 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "\"order\"")
-@EqualsAndHashCode(exclude = "products")
-@ToString(exclude = "products")
+@EqualsAndHashCode(exclude = {"products", "customers"})
+@ToString(exclude = {"products", "customers"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +21,13 @@ public class Order {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
+    @ManyToMany
+    @JoinTable(
+            name = "order_customer",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id")
+    )
+    private Set<Customer> customers = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
