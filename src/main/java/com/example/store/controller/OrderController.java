@@ -24,7 +24,6 @@ public class OrderController {
     private final OrderMapper orderMapper;
 
     @GetMapping
-    @Cacheable(value = "orders", key = "0")
     public List<OrderDTO> getAllOrders() {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
     }

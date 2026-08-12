@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   app:
     build: .
@@ -12,3 +13,20 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  reset-sequences:
+    image: postgres:16.2
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: admin
+    volumes:
+      - ./docker/reset-sequences.sql:/sql/reset-sequences.sql:ro
+    command: >
+      sh -c "
+      echo 'Application is healthy. Resetting PostgreSQL sequences...';
+      psql -h app -p 5433 -U admin -d store -f /sql/reset-sequences.sql;
+      echo 'PostgreSQL sequences reset complete.';
+      "
+    restart: "no"

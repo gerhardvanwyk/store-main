@@ -44,7 +44,7 @@ public class CacheConfig {
                 .of(Long.class, Serializable.class)
                 .name("orders-map")
                 .entries(entries)
-                .averageValue(new ArrayList<>())
+                .averageValue(new String())
                 .createPersistedTo(ordersFile);
 
         ChronicleSpringCache springOrdersCache = new ChronicleSpringCache("orders", ordersMap);
@@ -56,7 +56,7 @@ public class CacheConfig {
                 .of(Long.class, Serializable.class)
                 .name("customers-map")
                 .entries(entries)
-                .averageValue(new ArrayList<>())
+                .averageValue(new String())
                 .createPersistedTo(customersFile);
 
         // Wrap it inside your custom Spring Cache adapter
@@ -69,7 +69,7 @@ public class CacheConfig {
                 .of(Long.class, Serializable.class)
                 .name("products-map")
                 .entries(entries)
-                .averageValue(new ArrayList<>())
+                .averageValue(new String())
                 .createPersistedTo(productsFile);
 
         ChronicleSpringCache springProductsCache = new ChronicleSpringCache("products", productsMap);
