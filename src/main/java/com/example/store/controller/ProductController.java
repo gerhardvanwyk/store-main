@@ -7,6 +7,9 @@ import com.example.store.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,8 +25,8 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @GetMapping
-    public List<ProductDTO> getAllProducts() {
-        return productMapper.productsToProductDTOs(productRepository.findAll());
+    public Page<ProductDTO> getAllProducts(@PageableDefault(size = 20) Pageable pageable) {
+        return productRepository.findAll(pageable).map(productMapper::productToProductDTO);
     }
 
     @GetMapping("/{id}")

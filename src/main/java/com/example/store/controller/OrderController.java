@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,8 +27,8 @@ public class OrderController {
     private final OrderMapper orderMapper;
 
     @GetMapping
-    public List<OrderDTO> getAllOrders() {
-        return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
+    public Page<OrderDTO> getAllOrders(@PageableDefault(size = 20) Pageable pageable) {
+        return orderRepository.findAll(pageable).map(orderMapper::orderToOrderDTO);
     }
 
     @GetMapping("/{id}")
