@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,7 +32,9 @@ public class OrderController {
     @GetMapping("/{id}")
     @Cacheable(value = "orders", key = "#id")
     public OrderDTO getOrderById(@PathVariable Long id) {
-        return orderMapper.orderToOrderDTO(orderRepository.findById(id).orElseThrow());
+        return orderRepository.findById(id)
+                .map(orderMapper::orderToOrderDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
     }
 
     @PostMapping

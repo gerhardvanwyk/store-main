@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -29,9 +30,10 @@ public class CustomerController {
     }
 
     @GetMapping("/{name}")
-    @Cacheable(value = "customers", key = "#id")
     public CustomerDTO getCustomerByName(@PathVariable String name) {
-        return customerMapper.customerToCustomerDTO(customerRepository.findByName(name).orElseThrow());
+        return customerRepository.findByName(name)
+                .map(customerMapper::customerToCustomerDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
     }
 
     @PostMapping
