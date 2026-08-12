@@ -90,10 +90,5 @@ public class ChronicleSpringCache implements Cache {
         }
     }
 
-    private void validCacheKey(Object key) {
-        if (!(key instanceof Long))  {
-            throw new IllegalArgumentException("Key must be of type Long");
-        }
-    }
  }
 

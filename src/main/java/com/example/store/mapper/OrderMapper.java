@@ -13,6 +13,7 @@ import java.util.List;
 public interface OrderMapper {
 
     @org.mapstruct.Mapping(source = "customers", target = "customers")
+    @org.mapstruct.Mapping(source = "products", target = "products")
     OrderDTO orderToOrderDTO(Order order);
 
     List<OrderDTO> ordersToOrderDTOs(java.util.Collection<Order> orders);

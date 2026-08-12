@@ -7,9 +7,7 @@ CREATE TABLE customer (
 -- Create order table
 CREATE TABLE "order" (
                          id BIGSERIAL PRIMARY KEY,
-                         description VARCHAR(255) NOT NULL,
-                         customer_id BIGINT NOT NULL,
-                         CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customer (id)
+                         description VARCHAR(255) NOT NULL
 );
 
 -- Create product table
@@ -27,4 +25,14 @@ CREATE TABLE order_product
     PRIMARY KEY (order_id, product_id),
     CONSTRAINT fk_order_product_order FOREIGN KEY (order_id) REFERENCES "order" (id),
     CONSTRAINT fk_order_product_product FOREIGN KEY (product_id) REFERENCES product (id)
+);
+
+-- Create order_customer join table
+CREATE TABLE order_customer
+(
+    order_id    BIGINT NOT NULL,
+    customer_id BIGINT NOT NULL,
+    PRIMARY KEY (order_id, customer_id),
+    CONSTRAINT fk_order_customer_order FOREIGN KEY (order_id) REFERENCES "order" (id),
+    CONSTRAINT fk_order_customer_customer FOREIGN KEY (customer_id) REFERENCES customer (id)
 );

@@ -94,6 +94,9 @@ public class IntegrationTest {
 
     @Test
     void testGetOrderReturnsProducts() {
+        if (cacheManager.getCache("orders") != null) {
+            cacheManager.getCache("orders").clear();
+        }
         Order order = new Order();
         order.setId(10L);
         order.setDescription("Test Order");
