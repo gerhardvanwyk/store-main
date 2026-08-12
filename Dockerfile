@@ -1,5 +1,5 @@
 # Build stage
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
 COPY . .
 RUN ./gradlew bootJar --no-daemon
@@ -27,5 +27,19 @@ RUN chmod +x /app/entrypoint.sh
 
 # Expose the application port and PostgreSQL port
 EXPOSE 8080 5433
+
+ENV JAVA_TOOL_OPTIONS="\
+--add-opens=java.base/java.lang=ALL-UNNAMED \
+--add-opens=java.base/java.lang.reflect=ALL-UNNAMED \
+--add-opens=java.base/java.util=ALL-UNNAMED \
+--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED \
+--add-opens=java.base/sun.nio.ch=ALL-UNNAMED \
+--add-opens=java.base/java.nio=ALL-UNNAMED \
+--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED \
+--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
+--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"
 
 ENTRYPOINT ["/app/entrypoint.sh"]
