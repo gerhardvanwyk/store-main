@@ -7,9 +7,9 @@ RUN ./gradlew bootJar --no-daemon
 # Final stage
 FROM postgres:16.2
 
-# Install OpenJDK 17
+# Install OpenJDK 17 and curl for health checks
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jre-headless && \
+    apt-get install -y openjdk-17-jre-headless curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Set environment variables for PostgreSQL

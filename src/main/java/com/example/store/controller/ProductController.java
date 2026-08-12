@@ -22,7 +22,7 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @GetMapping
-    @Cacheable(value = "products", key = "'all'")
+    @Cacheable(value = "products", key = "0")
     public List<ProductDTO> getAllProducts() {
         return productMapper.productsToProductDTOs(productRepository.findAll());
     }

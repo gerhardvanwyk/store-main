@@ -24,7 +24,7 @@ public class CustomerController {
     private final CustomerMapper customerMapper;
 
     @GetMapping
-    @Cacheable(value = "customers", key = "'all'")
+    @Cacheable(value = "customers", key = "0")
     public List<CustomerDTO> getAllCustomers() {
         return customerMapper.customersToCustomerDTOs(customerRepository.findAll());
     }
